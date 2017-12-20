@@ -3,15 +3,17 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-# Create your models here.
-class Xls(models.Model):
+# Create your models import here.
+class Example(models.Model):
     class Meta:
         managed = False
+
+    template_context = {
+        'title_page': 'Import file app',
+        'title': 'Default import example',
+        'button': 'Import me!'
+    }
 
     def process_file(self, file_path):
         return "The file {} will be processed".format(file_path)
-
-class Mdb(models.Model):
-    class Meta:
-        managed = False
 

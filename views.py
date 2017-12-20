@@ -11,12 +11,15 @@ from .forms import ImportForm
 
 def import_entrypoint_view(request):
 
-    context = {}
+    context = configure_context(get_importer_class(request))
     if request.method == 'POST':
         form = ImportForm(request.POST, request.FILES)
         if form.is_valid():
             file_path = save_uploaded_file(request.FILES['file'])
-            context['message'] = handle_uploaded_file(request, file_path)
+            context['message'] = handle_uploaded_file(
+                get_importer_class(request),
+                file_path
+            )
             return render(request, 'importer/index.html', context)
         else:
             context['message'] = 'No valid data.'
@@ -33,7 +36,7 @@ def save_uploaded_file(file_uploaded):
 
     return temp_file
 
-def handle_uploaded_file(request, file_path):
+def get_importer_class(request):
     # Get from the url the last part, because is the import
     # class to use. Becareful with possible ending slash!
     uri = request.build_absolute_uri('?')
@@ -49,8 +52,12 @@ def handle_uploaded_file(request, file_path):
             class_importer = obj
             break
 
-    if class_importer:
-        importer = class_importer()
-        return importer.process_file(file_path)
-    else:
-        return 'The import class for {} is not properly configured'.format(class_to_use)
+    return class_importer
+
+def handle_uploaded_file(class_importer, file_path):
+    importer = class_importer()
+    return importer.process_file(file_path)
+
+def configure_context(class_importer):
+    context = class_importer.template_context
+    return context

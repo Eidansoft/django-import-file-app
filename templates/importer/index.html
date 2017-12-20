@@ -1,13 +1,12 @@
 {% extends "admin/app_index.html" %}
-{% block title %}Access MDB importation utility{% endblock %}
+{% block title %}{{ title_page }}{% endblock %}
 
 {% block content %}
-    <h1>Importaci&oacute;n de archivo Excel (*.xls)</h1>
     {% if not message %}
-        <form action="" method="post" enctype="multipart/form-data">
+        <form action="#" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="Import" />
+            <input type="submit" value="{{ button }}" />
         </form>
     {% else %}
         <h2>{{ message }}</h2>
