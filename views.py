@@ -10,7 +10,6 @@ from .forms import ImportForm
 
 
 def import_entrypoint_view(request):
-    import ipdb; ipdb.set_trace(context=21)
     context = configure_context(get_importer_class(request))
     form = configure_form(get_importer_class(request))
     if request.method == 'POST':
@@ -67,5 +66,4 @@ def configure_context(class_importer):
     return context
 
 def configure_form(class_importer, *args, **kwargs):
-    import ipdb; ipdb.set_trace(context=21)
     return class_importer.get_form(*args, **kwargs)
