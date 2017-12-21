@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-
+from .forms import ImportForm
 
 # Create your models import here.
 class Example_Importer(models.Model):
@@ -20,3 +20,6 @@ class Example_Importer(models.Model):
         
         return "The file {} will be processed".format(file_path)
 
+    @staticmethod
+    def get_form(*args, **kwargs):
+        return ImportForm(*args, **kwargs)

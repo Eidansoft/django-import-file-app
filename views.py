@@ -10,10 +10,15 @@ from .forms import ImportForm
 
 
 def import_entrypoint_view(request):
-
+    import ipdb; ipdb.set_trace(context=21)
     context = configure_context(get_importer_class(request))
+    form = configure_form(get_importer_class(request))
     if request.method == 'POST':
-        form = ImportForm(request.POST, request.FILES)
+        form = configure_form(
+            get_importer_class(request),
+            request.POST,
+            request.FILES
+        )
         if form.is_valid():
             file_path = save_uploaded_file(request.FILES['file'])
             context['message'] = handle_uploaded_file(
@@ -24,7 +29,6 @@ def import_entrypoint_view(request):
         else:
             context['message'] = 'No valid data.'
 
-    form = ImportForm()
     context['form'] = form
     return render(request, 'importer/index.html', context)
 
@@ -61,3 +65,7 @@ def handle_uploaded_file(class_importer, file_path):
 def configure_context(class_importer):
     context = class_importer.template_context
     return context
+
+def configure_form(class_importer, *args, **kwargs):
+    import ipdb; ipdb.set_trace(context=21)
+    return class_importer.get_form(*args, **kwargs)
