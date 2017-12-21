@@ -15,6 +15,6 @@ class ImporterAdministration(admin.ModelAdmin):
 # Import all classes in models.py in order to make it
 # appear at the main admin interface.
 for name, obj in inspect.getmembers(models):
-    if inspect.isclass(obj):
+    if inspect.isclass(obj) and name.endswith('_Importer'):
         admin.site.register(obj, ImporterAdministration)
 
