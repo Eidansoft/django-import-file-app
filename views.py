@@ -19,10 +19,9 @@ def import_entrypoint_view(request):
             request.FILES
         )
         if form.is_valid():
-            file_path = save_uploaded_file(request.FILES['file'])
             context['message'] = handle_uploaded_file(
                 get_importer_class(request),
-                file_path
+                request
             )
             return render(request, 'importer/index.html', context)
         else:
@@ -30,14 +29,6 @@ def import_entrypoint_view(request):
 
     context['form'] = form
     return render(request, 'importer/index.html', context)
-
-def save_uploaded_file(file_uploaded):
-    temp_file = 'uploaded_file.tmp'
-    with open(temp_file, 'wb+') as destination:
-        for chunk in file_uploaded.chunks():
-            destination.write(chunk)
-
-    return temp_file
 
 def get_importer_class(request):
     # Get from the url the last part, because is the import
@@ -57,9 +48,9 @@ def get_importer_class(request):
 
     return class_importer
 
-def handle_uploaded_file(class_importer, file_path):
+def handle_uploaded_file(class_importer, request):
     importer = class_importer()
-    return importer.process_file(file_path)
+    return importer.process_file(request)
 
 def configure_context(class_importer):
     context = class_importer.template_context
