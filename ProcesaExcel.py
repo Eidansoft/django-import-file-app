@@ -33,7 +33,6 @@ class ProcesaExcel:
         # By default I work on first sheet
         ws = wb.sheet_by_index(0)
 
-        import ipdb; ipdb.set_trace(context=21)
         res = []
         row = self.celda_cabecera_izq.row + 1
         while row < ws.nrows:
