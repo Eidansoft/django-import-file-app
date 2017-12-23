@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 import inspect
-import models
+from importer import models
 
 # Create your views here.
 from .forms import ImportForm
