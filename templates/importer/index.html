@@ -9,6 +9,14 @@
             <input type="submit" value="{{ button }}" />
         </form>
     {% else %}
-        <h2>{{ message }}</h2>
+        <h2>{{ message.msg }}</h2>
+        {% if message.errors %}
+            <p>The following are duplicated:</p>
+            <ul>
+              {% for error in message.errors %}
+              <li>Duplicated: {{ error.concept }}({{ error.date }}) - {{ error.amount }}</li>
+              {% endfor %}
+            </ul>
+        {% endif %}
     {% endif %}
 {% endblock %}

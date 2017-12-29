@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.db.utils import IntegrityError
 from datetime import datetime
 from .forms import ImportForm
 from importer.ProcesaExcel import ProcesaExcel, Celda
@@ -50,18 +51,26 @@ class Xls_Importer(ImporterBase):
         )
         data = excel_procesor.get_excel_data()
 
-        import ipdb; ipdb.set_trace(context=21)
+        errors = []
         for movement in data:
             the_date = datetime.strptime(
                 movement.get(u'FECHA VALOR').value,
                 '%d/%m/%Y'
             )
-            obj = Spending.objects.create(
-                concept = movement.get(u'DESCRIPCI\xd3N').value,
-                date = the_date,
-                amount = movement.get(u'IMPORTE (\u20ac)').value
-            )
-            pass
 
+            spend = Spending()
+            spend.concept = movement.get(u'DESCRIPCI\xd3N').value
+            spend.date = the_date
+            spend.amount = movement.get(u'IMPORTE (\u20ac)').value
 
+            try:
+                obj = Spending.objects.create(
+                    concept = spend.concept,
+                    date = the_date,
+                    amount = spend.amount
+                )
+            except IntegrityError:
+                errors.append(spend)
+
+        return {'msg': 'Data saved!', 'errors': errors}
 
