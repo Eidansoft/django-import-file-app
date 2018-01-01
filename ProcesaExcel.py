@@ -1,10 +1,12 @@
 import xlrd
 
+
 class Celda:
     def __init__(self, row, col):
         self.row = row
         self.col = col
-    
+
+
 class ProcesaExcel:
 
     def __init__(self, path, celda_cabecera_izq, celda_cabecera_der):
@@ -20,14 +22,14 @@ class ProcesaExcel:
         wb = xlrd.open_workbook(self.path)
         # By default I work on first sheet
         ws = wb.sheet_by_index(0)
-        
+
         self.headers = []
         for col in range(self.celda_cabecera_izq.col, self.celda_cabecera_der.col + 1):
             self.headers.append( ws.cell(self.celda_cabecera_izq.row, col).value )
 
     def get_excel_headers(self):
         return self.headers
-        
+
     def get_excel_data(self):
         wb = xlrd.open_workbook(self.path)
         # By default I work on first sheet

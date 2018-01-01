@@ -36,6 +36,7 @@ class ImporterBase(models.Model):
 
         return temp_file
 
+
 # Create your models import here.
 class Xls_Importer(ImporterBase):
     class Meta:
@@ -49,6 +50,7 @@ class Xls_Importer(ImporterBase):
             Celda(5, 0),
             Celda(5, 5)
         )
+
         data = excel_procesor.get_excel_data()
 
         errors = []
