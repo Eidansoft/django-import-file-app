@@ -6,7 +6,7 @@ from django.db.utils import IntegrityError
 from datetime import datetime
 from .forms import ImportForm
 from importer.ProcesaExcel import ProcesaExcel, Celda
-from gastos.models import Spending
+from gastos.models import Spending, Tag
 
 
 class ImporterBase(models.Model):
@@ -51,6 +51,11 @@ class Xls_Importer(ImporterBase):
             Celda(5, 5)
         )
 
+        tag = request.POST['tag_name']
+        existing_tag = Tag.objects.filter(name=tag).first()
+        if not existing_tag:
+            existing_tag = Tag.objects.create(name=tag)
+
         data = excel_procesor.get_excel_data()
 
         errors = []
@@ -66,13 +71,11 @@ class Xls_Importer(ImporterBase):
             spend.amount = movement.get(u'IMPORTE (\u20ac)').value
 
             try:
-                obj = Spending.objects.create(
-                    concept = spend.concept,
-                    date = the_date,
-                    amount = spend.amount
-                )
+                spend.save()
             except IntegrityError:
                 errors.append(spend)
+            else:
+                spend.tags.set([existing_tag])
+                spend.save()
 
         return {'msg': 'Data saved!', 'errors': errors}
-
