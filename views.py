@@ -6,21 +6,21 @@ import inspect
 from importer import models
 
 # Create your views here.
-from .forms import ImportForm
 
 
 def import_entrypoint_view(request):
-    context = configure_context(get_importer_class(request))
-    form = configure_form(get_importer_class(request))
+    imported_class = get_importer_class(request)()
+    context = configure_context(imported_class)
+    form = configure_form(imported_class)
     if request.method == 'POST':
         form = configure_form(
-            get_importer_class(request),
+            imported_class,
             request.POST,
             request.FILES
         )
         if form.is_valid():
             context['message'] = handle_uploaded_file(
-                get_importer_class(request),
+                imported_class,
                 request
             )
             return render(request, 'importer/index.html', context)
@@ -29,6 +29,7 @@ def import_entrypoint_view(request):
 
     context['form'] = form
     return render(request, 'importer/index.html', context)
+
 
 def get_importer_class(request):
     # Get from the url the last part, because is the import
@@ -48,13 +49,15 @@ def get_importer_class(request):
 
     return class_importer
 
+
 def handle_uploaded_file(class_importer, request):
-    importer = class_importer()
-    return importer.process_file(request)
+    return class_importer.process_file(request)
+
 
 def configure_context(class_importer):
     context = class_importer.template_context
     return context
+
 
 def configure_form(class_importer, *args, **kwargs):
     return class_importer.get_form(*args, **kwargs)

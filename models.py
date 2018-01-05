@@ -52,9 +52,7 @@ class Xls_Importer(ImporterBase):
         )
 
         tag = request.POST['tag_name']
-        existing_tag = Tag.objects.filter(name=tag).first()
-        if not existing_tag:
-            existing_tag = Tag.objects.create(name=tag)
+        existing_tag, created = Tag.objects.get_or_create(name=tag)
 
         data = excel_procesor.get_excel_data()
 
