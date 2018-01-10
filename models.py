@@ -51,8 +51,10 @@ class Xls_Importer(ImporterBase):
             Celda(5, 5)
         )
 
-        tag = request.POST['tag_name']
-        existing_tag, created = Tag.objects.get_or_create(name=tag)
+        existing_tag = None
+        if request.POST and request.POST['tag_name']:
+            tag = request.POST['tag_name']
+            existing_tag, created = Tag.objects.get_or_create(name=tag)
 
         data = excel_procesor.get_excel_data()
 
@@ -73,7 +75,8 @@ class Xls_Importer(ImporterBase):
             except IntegrityError:
                 errors.append(spend)
             else:
-                spend.tags.set([existing_tag])
-                spend.save()
+                if existing_tag:
+                    spend.tags.set([existing_tag])
+                    spend.save()
 
         return {'msg': 'Data saved!', 'errors': errors}
