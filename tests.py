@@ -8,7 +8,7 @@ from gastos.models import Spending, Tag
 
 # Create your tests here.
 class ImporterTests(TransactionTestCase):
-    def test_xls_importer(self):
+    def test_xls_importer_with_no_tag(self):
         path = join(dirname(__file__), 'test1.xls')
         with open(path, 'rb') as f:
             form = {
